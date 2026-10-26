@@ -5,6 +5,8 @@
 A small desktop tool that sweeps an **internal** network for HTTP/HTTPS services, detects the
 **PHP version** from HTTP headers (and, in deep mode, from the page body and known paths), and
 classifies each host as safe / vulnerable / EOL against a built-in patch and EOL table.
+It was built to help defenders triage **PHP2Shell** (**CVE-2026-109618** / **CVE-2026-109619**)
+exposure across a PHP estate.
 
 - **No dependencies** — Python standard library only (Tkinter GUI included).
 - **Single file / single exe** — build one portable `.exe`, no install, works offline.
@@ -13,6 +15,20 @@ classifies each host as safe / vulnerable / EOL against a built-in patch and EOL
 > ⚠️ **Authorized use only.** This is a vulnerability-auditing tool. Scan only networks you own or
 > are explicitly authorized to test. Deep mode actively probes paths such as `/.env`, `/.git/` and
 > `phpinfo.php`. Do **not** point it at hosts you do not control.
+
+## Why — PHP2Shell (CVE-2026-109618 / CVE-2026-109619)
+
+**PHP2Shell** is the community name for two critical PHP runtime flaws disclosed on **2026-10-21**
+(**CVE-2026-109618** and **CVE-2026-109619**, CVSS **9.2**). Crafted web requests allow
+**unauthenticated remote code execution (RCE)** and leaking secrets from a PHP worker's memory,
+*before the application's own code runs* — so frameworks (Laravel, Symfony) and CMSs (WordPress)
+do **not** shield a vulnerable runtime. Fixed in **8.5.12 / 8.4.27 / 8.3.36 / 8.2.35**
+(backports for 7.4 / 8.0 / 8.1; end-of-life ≤ 8.1 should be isolated and upgraded).
+
+This tool does **not** patch anything. It helps **defenders inventory and triage PHP2Shell exposure**:
+quickly find which internal hosts run an affected/unpatched PHP, flag end-of-life versions, and
+surface risky exposures (`phpinfo()`, `.env`, `.git`, debug consoles) that make a foothold easier —
+so you can prioritize patching to the fixed versions above and rotate any secrets a PHP worker held.
 
 ## Features
 
@@ -74,6 +90,8 @@ Then in the scanner set **Subnet** `127.0.0.1/32`, **Ports** `8080`, enable **De
 **İç** ağdaki HTTP/HTTPS servislerini tarayan; **PHP sürümünü** HTTP başlıklarından (derin modda
 ayrıca sayfa gövdesi ve bilinen yollardan) tespit eden; her host'u yerleşik yama ve EOL tablosuna
 göre güvenli / zafiyetli / EOL olarak sınıflandıran küçük bir masaüstü aracı.
+**PHP2Shell** (**CVE-2026-109618** / **CVE-2026-109619**) maruziyetini bir PHP envanterinde
+önceliklendirmek için yapılmıştır.
 
 - **Bağımlılık yok** — yalnız Python standart kütüphanesi (Tkinter arayüz dahil).
 - **Tek dosya / tek exe** — taşınabilir tek bir `.exe` derlenir, kurulum gerekmez, çevrimdışı çalışır.
@@ -82,6 +100,22 @@ göre güvenli / zafiyetli / EOL olarak sınıflandıran küçük bir masaüstü
 > ⚠️ **Yalnızca yetkili kullanım.** Bu bir zafiyet denetim aracıdır. Sadece sahibi olduğun ya da
 > test etmeye açıkça yetkili olduğun ağları tara. Derin mod `/.env`, `/.git/` ve `phpinfo.php` gibi
 > yolları aktif olarak yoklar. Kontrolünde **olmayan** hostlara **yöneltme**.
+
+## Neden — PHP2Shell (CVE-2026-109618 / CVE-2026-109619)
+
+**PHP2Shell**, **21.10.2026**'da açıklanan iki kritik PHP çalışma-zamanı açığının topluluk adıdır
+(**CVE-2026-109618** ve **CVE-2026-109619**, CVSS **9.2**). Özel hazırlanmış web istekleriyle
+**kimlik doğrulamasız uzaktan kod çalıştırma (RCE)** ve PHP işçisinin belleğinden sır sızdırma
+mümkündür; üstelik bu *uygulamanın kendi kodu çalışmadan önce* olur — yani çerçeveler (Laravel,
+Symfony) ve CMS'ler (WordPress) zafiyetli çalışma zamanını **korumaz**. Yamalı sürümler
+**8.5.12 / 8.4.27 / 8.3.36 / 8.2.35** (7.4 / 8.0 / 8.1 için backport; destek dışı ≤ 8.1
+internetten izole edilip yükseltilmeli).
+
+Bu araç hiçbir şeyi **yamalamaz**. Savunmacıların **PHP2Shell maruziyetini envanterlemesine ve
+önceliklendirmesine** yardım eder: hangi iç hostların etkilenmiş/yamasız PHP çalıştırdığını hızla
+bulur, destek-dışı sürümleri işaretler ve dayanak noktası oluşturmayı kolaylaştıran riskli
+açıklıkları (`phpinfo()`, `.env`, `.git`, debug konsolları) ortaya çıkarır — böylece yukarıdaki
+yamalı sürümlere geçişi önceliklendirip PHP işçisinin tuttuğu sırları değiştirebilirsin.
 
 ## Özellikler
 
