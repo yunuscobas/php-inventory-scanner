@@ -1,0 +1,24 @@
+# PyInstaller build artifacts
+build/
+dist/
+*.spec
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Scan outputs (do not commit real scan data)
+*.xlsx
+*.csv
+*.json
+*.html
+!sample*.json
+
+# OS / editor
+Thumbs.db
+.DS_Store
+.vscode/
+.idea/
