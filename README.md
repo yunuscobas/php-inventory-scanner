@@ -1,5 +1,7 @@
 # PHP Inventory Scanner
 
+**English** | [Türkçe](#türkçe)
+
 A small desktop tool that sweeps an **internal** network for HTTP/HTTPS services, detects the
 **PHP version** from HTTP headers (and, in deep mode, from the page body and known paths), and
 classifies each host as safe / vulnerable / EOL against a built-in patch and EOL table.
@@ -65,5 +67,70 @@ Then in the scanner set **Subnet** `127.0.0.1/32`, **Ports** `8080`, enable **De
 
 ---
 
-**Türkçe:** İç ağda HTTP/HTTPS servislerini tarayıp PHP sürümünü tespit eden, güvenli/zafiyetli/EOL
-olarak sınıflandıran bağımlılıksız masaüstü aracı (TR/EN arayüz). Yalnızca **yetkili** ağlarda kullanın.
+# Türkçe
+
+[English](#php-inventory-scanner) | **Türkçe**
+
+**İç** ağdaki HTTP/HTTPS servislerini tarayan; **PHP sürümünü** HTTP başlıklarından (derin modda
+ayrıca sayfa gövdesi ve bilinen yollardan) tespit eden; her host'u yerleşik yama ve EOL tablosuna
+göre güvenli / zafiyetli / EOL olarak sınıflandıran küçük bir masaüstü aracı.
+
+- **Bağımlılık yok** — yalnız Python standart kütüphanesi (Tkinter arayüz dahil).
+- **Tek dosya / tek exe** — taşınabilir tek bir `.exe` derlenir, kurulum gerekmez, çevrimdışı çalışır.
+- **Çift dilli arayüz** — İngilizce (varsayılan) ve Türkçe, sağ üstten değiştirilir (EN/TR).
+
+> ⚠️ **Yalnızca yetkili kullanım.** Bu bir zafiyet denetim aracıdır. Sadece sahibi olduğun ya da
+> test etmeye açıkça yetkili olduğun ağları tara. Derin mod `/.env`, `/.git/` ve `phpinfo.php` gibi
+> yolları aktif olarak yoklar. Kontrolünde **olmayan** hostlara **yöneltme**.
+
+## Özellikler
+
+- Bir veya birden çok CIDR aralığında eşzamanlı TCP/HTTP taraması (güvenlik freni `0.0.0.0/0` gibi
+  devasa blokları engeller).
+- `Server` / `X-Powered-By` başlıklarından, `PHPSESSID` ipucundan ve HEAD→GET geri dönüşünden sürüm tespiti.
+- **Derin tarama (isteğe bağlı, daha yavaş):**
+  - Uygulama/çerçeve parmak izi: WordPress, Laravel, Joomla, Drupal, Symfony.
+  - Başlıklar sürümü gizlediğinde, açıkta kalan bir `phpinfo()` sayfasından sürüm.
+  - Güvenlik bulguları: açıkta `phpinfo()`, `.env`, `.git/config`, `composer.json`,
+    Laravel Ignition, Symfony profiler.
+- Çevrimdışı tablodan EOL tarihi + etkilenen CVE ipuçları.
+- Canlı, renk kodlu sonuç tablosu.
+- **Excel (.xlsx)**, **CSV**, **JSON** ve kendi kendine yeten **HTML rapor** dışa aktarma.
+- Önceki bir JSON taramasıyla **karşılaştırma** (yeni / yamalanmış / kaybolan / hâlâ zafiyetli).
+
+## Gereksinimler
+
+- Python **3.9+** (`concurrent.futures` `cancel_futures`, `addinfourl.status` kullanılır).
+- Tkinter (Windows/macOS'taki standart CPython kurulumuyla birlikte gelir).
+
+## Kaynaktan çalıştırma
+
+```bash
+python php_tarayici.py
+```
+
+## Tek başına .exe derleme (Windows)
+
+```bash
+pip install pyinstaller
+pyinstaller --onefile --noconsole --name "PHP-Tarayici" php_tarayici.py
+```
+
+İkili dosya `dist/PHP-Tarayici.exe` altında oluşur.
+
+## Sahte sunucuyla deneme (gerçek PHP gerekmez)
+
+`mock_php_server.py`, bir PHP host'unu taklit eder; tespiti yerelde doğrulayabilirsin:
+
+```bash
+python mock_php_server.py 8080 vuln     # modlar: vuln | safe | hidden
+```
+
+Sonra tarayıcıda **Alt ağ** `127.0.0.1/32`, **Port** `8080` gir, **Derin tarama**yı işaretle ve başlat.
+
+## Notlar
+
+- EOL tarihleri ve CVE referansları kaynaktaki **çevrimdışı tablodandır**; resmî php.net sürüm
+  notlarıyla doğrula ve gerektikçe güncelle.
+- Tarayıcıda TLS doğrulaması bilinçli olarak gevşetilmiştir (self-signed iç hostlar). Bu kod yolu
+  yalnızca tarayıcıya özeldir — genel amaçlı bir istemcide yeniden kullanma.
