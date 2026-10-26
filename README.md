@@ -30,6 +30,10 @@ quickly find which internal hosts run an affected/unpatched PHP, flag end-of-lif
 surface risky exposures (`phpinfo()`, `.env`, `.git`, debug consoles) that make a foothold easier —
 so you can prioritize patching to the fixed versions above and rotate any secrets a PHP worker held.
 
+## Screenshot
+
+![PHP Inventory Scanner — deep scan results](docs/screenshot.png)
+
 ## Features
 
 - Concurrent TCP/HTTP sweep of one or more CIDR ranges (safety cap blocks huge blocks like `0.0.0.0/0`).
